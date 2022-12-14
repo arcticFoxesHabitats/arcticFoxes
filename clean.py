@@ -14,19 +14,19 @@ import datetime as dt
 import warnings
 
 #data of all foxes:
-all_foxes = pyreadr.read_r('../data/r_files/track_all.RDS')[None]
+all_foxes = pyreadr.read_r('data/r_files/track_all.RDS')[None]
 #resampled data of all foxes (over 2 hours):
-all_foxes_resamp = pyreadr.read_r('../data/r_files/track_resamp.RDS')[None]
+all_foxes_resamp = pyreadr.read_r('data/r_files/track_resamp.RDS')[None]
 #metadata:
-fox_metadata = pd.read_csv("../data/additional_info.csv", sep = "\t")
+fox_metadata = pd.read_csv("data/additional_info.csv", sep = "\t")
 
 #load raster layers:
-elev = rasterio.open("../data/Rasters_for_R/DEM_30.tif")
-aspect = rasterio.open("../data/Rasters_for_R/aspect_30.tif")
-NDVI_NDMI = rasterio.open("../data/Rasters_for_R/NDVI_arj_vind.tif")
-slope = rasterio.open("../data/Rasters_for_R/slope_arj_vind.tif")
-veg = rasterio.open("../data/Rasters_for_R/veg_nofor_morecats.tif")
-soil = rasterio.open("../data/Rasters_for_R/soil_av_clip.tif")
+elev = rasterio.open("data/Rasters_for_R/DEM_30.tif")
+aspect = rasterio.open("data/Rasters_for_R/aspect_30.tif")
+NDVI_NDMI = rasterio.open("data/Rasters_for_R/NDVI_arj_vind.tif")
+slope = rasterio.open("data/Rasters_for_R/slope_arj_vind.tif")
+veg = rasterio.open("data/Rasters_for_R/veg_nofor_morecats.tif")
+soil = rasterio.open("data/Rasters_for_R/soil_av_clip.tif")
 
 #DF containing all points:
 gdf_all = geopd.GeoDataFrame(
@@ -133,11 +133,11 @@ foxes_resamp_clean.dropna(inplace = True)
 foxes_all_final = foxes_all_clean.copy()
 foxes_all_final["timestamp"] = foxes_all_final["t_"].apply(lambda x: dt.datetime.timestamp(x))
 foxes_all_final["t_"] = foxes_all_final["t_"].dt.strftime("%Y-%m-%d-%H:%M:%S")
-foxes_all_final.to_file("../data/cleaned_shapefiles/foxes_all.shp")
+foxes_all_final.to_file("data/cleaned_shapefiles/foxes_all.shp")
 
 foxes_resamp_final = foxes_resamp_clean.copy()
 foxes_resamp_final["timestamp"] = foxes_resamp_final["t_"].apply(lambda x: dt.datetime.timestamp(x))
 foxes_resamp_final["t_"] = foxes_resamp_final["t_"].dt.strftime("%Y-%m-%d-%H:%M:%S")
-foxes_resamp_final.to_file("../data/cleaned_shapefiles/foxes_resamp.shp")
+foxes_resamp_final.to_file("data/cleaned_shapefiles/foxes_resamp.shp")
 
-sample_points_clean.to_file("../data/cleaned_shapefiles/sample_points.shp")
+sample_points_clean.to_file("data/cleaned_shapefiles/sample_points.shp")
