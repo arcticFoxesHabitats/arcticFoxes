@@ -129,6 +129,14 @@ foxes_resamp_clean.NDVI.fillna(0, inplace=True)
 foxes_resamp_clean.aspect.fillna(-1, inplace=True)
 foxes_resamp_clean.dropna(inplace = True)
 
+#drop duplicates
+foxes_all_clean.sort_values(["id", "t_"], inplace=True)
+foxes_all_clean.drop_duplicates()
+
+foxes_resamp_clean.sort_values(["id", "t_"], inplace=True)
+foxes_resamp_clean.drop_duplicates()
+
+
 #save dataframes as shp-files
 foxes_all_final = foxes_all_clean.copy()
 foxes_all_final["timestamp"] = foxes_all_final["t_"].apply(lambda x: dt.datetime.timestamp(x))
