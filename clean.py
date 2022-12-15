@@ -120,13 +120,13 @@ gdf_resamp.elev = gdf_resamp.elev.apply(lambda x : np.nan if x < -3.4e+38 else x
 
 #drop missing vegetation values
 # Sample points
-sample_points_clean = sample_points.dropna(subset = ["veg"]).reset_index(drop = True)
+sample_points_clean = sample_points.dropna(subset = ["veg"])
 
 # gdf all
-foxes_all_clean = gdf_all.dropna(subset = ["veg"]).reset_index(drop = True)
+foxes_all_clean = gdf_all.dropna(subset = ["veg"])
 
 # gdf resampled
-foxes_resamp_clean = gdf_resamp.dropna(subset = ["veg"]).reset_index(drop = True)
+foxes_resamp_clean = gdf_resamp.dropna(subset = ["veg"])
 
 #fill NaNs in the other columns
 sample_points_clean.NDMI.fillna(-1, inplace=True)
@@ -155,14 +155,17 @@ print("Almost there. Now the data is being saved to the files")
 
 #save dataframes as shp-files
 foxes_all_final = foxes_all_clean.copy()
+foxes_all_final.reset_index(drop = True)
 foxes_all_final["timestamp"] = foxes_all_final["t_"].apply(lambda x: dt.datetime.timestamp(x))
 foxes_all_final["t_"] = foxes_all_final["t_"].dt.strftime("%Y-%m-%d-%H:%M:%S")
 foxes_all_final.to_file("data/cleaned_shapefiles/foxes_all.shp")
 
 foxes_resamp_final = foxes_resamp_clean.copy()
+foxes_resamp_final.reset_index(drop = True)
 foxes_resamp_final["timestamp"] = foxes_resamp_final["t_"].apply(lambda x: dt.datetime.timestamp(x))
 foxes_resamp_final["t_"] = foxes_resamp_final["t_"].dt.strftime("%Y-%m-%d-%H:%M:%S")
 foxes_resamp_final.to_file("data/cleaned_shapefiles/foxes_resamp.shp")
 
+sample_points_clean.reset_index(drop = True)
 sample_points_clean.to_file("data/cleaned_shapefiles/sample_points.shp")
 print("Done. The cleaned data is now saved.")
