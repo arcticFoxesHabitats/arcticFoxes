@@ -11,8 +11,8 @@ import rasterio.rio
 import geopandas as geopd
 import pyreadr
 import datetime as dt 
-import warnings
 
+print("The data for the arctic foxes is being loaded and cleaned. This might take several minutes")
 #data of all foxes:
 all_foxes = pyreadr.read_r('data/r_files/track_all.RDS')[None]
 #resampled data of all foxes (over 2 hours):
@@ -27,6 +27,8 @@ NDVI_NDMI = rasterio.open("data/Rasters_for_R/NDVI_arj_vind.tif")
 slope = rasterio.open("data/Rasters_for_R/slope_arj_vind.tif")
 veg = rasterio.open("data/Rasters_for_R/veg_nofor_morecats.tif")
 soil = rasterio.open("data/Rasters_for_R/soil_av_clip.tif")
+
+print("All data is loaded.")
 
 #DF containing all points:
 gdf_all = geopd.GeoDataFrame(
@@ -56,21 +58,34 @@ gdf_resamp['aspect'] = [x[0] for x in aspect.sample(coord_list_resamp)]
 gdf_resamp['elev'] = [x[0] for x in elev.sample(coord_list_resamp)]
 gdf_resamp.drop("NDVI_NDMI", inplace = True, axis=1)
 
+print("The dataframes containing the positions of the foxes are built.")
+print("Now, the dataframe with the sample points gets built.")
+print("This is the most time consuming task...")
+
 #DF with sample points
 xy = np.mgrid[gdf_all.x_.min():gdf_all.x_.max():70, gdf_all.y_.min():gdf_all.y_.max():70].reshape(2,-1).T
 xy = pd.DataFrame(xy, columns= ["x","y"])
 sample_points = geopd.GeoDataFrame(
     xy, geometry=geopd.points_from_xy(xy.x, xy.y))
+
 coord_list_sample = [(x,y) for x,y in zip(sample_points['geometry'].x , sample_points['geometry'].y)]
 sample_points['NDVI_NDMI'] = [x for x in NDVI_NDMI.sample(coord_list_sample)]
+print("The first feature, NDVI_NDMI, is loaded. You are approximately 80 Percent done.")
 
 sample_points["NDVI"] = [sample_points.NDVI_NDMI[i][2] for i in range(0,sample_points.shape[0])]
+print("NDVI is extracted.")
 sample_points["NDMI"] = [sample_points.NDVI_NDMI[i][1] for i in range(0,sample_points.shape[0])]
+print("NDMI is extracted.")
 sample_points['soil'] = [x[0] for x in soil.sample(coord_list_sample)]
+print("The information describing the soil is loaded")
 sample_points['veg'] = [x[0] for x in veg.sample(coord_list_sample)]
+print("The information describing the vegetation is loaded")
 sample_points['slope'] = [x[0] for x in slope.sample(coord_list_sample)]
+print("The information describing the slope is loaded")
 sample_points['aspect'] = [x[0] for x in aspect.sample(coord_list_sample)]
+print("The information about the aspect is loaded")
 sample_points['elev'] = [x[0] for x in elev.sample(coord_list_sample)]
+print("The information regarding the elevation is loaded")
 sample_points.drop("NDVI_NDMI", inplace = True, axis=1)
 
 
@@ -136,6 +151,7 @@ foxes_all_clean.drop_duplicates()
 foxes_resamp_clean.sort_values(["id", "t_"], inplace=True)
 foxes_resamp_clean.drop_duplicates()
 
+print("Almost there. Now the data is being saved to the files")
 
 #save dataframes as shp-files
 foxes_all_final = foxes_all_clean.copy()
@@ -149,3 +165,4 @@ foxes_resamp_final["t_"] = foxes_resamp_final["t_"].dt.strftime("%Y-%m-%d-%H:%M:
 foxes_resamp_final.to_file("data/cleaned_shapefiles/foxes_resamp.shp")
 
 sample_points_clean.to_file("data/cleaned_shapefiles/sample_points.shp")
+print("Done. The cleaned data is now saved.")
