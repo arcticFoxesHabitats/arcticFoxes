@@ -146,25 +146,31 @@ foxes_resamp_clean.dropna(inplace = True)
 
 #drop duplicates
 foxes_all_clean.sort_values(["id", "t_"], inplace=True)
-foxes_all_clean.drop_duplicates()
+foxes_all_clean = foxes_all_clean.drop_duplicates()
 
 foxes_resamp_clean.sort_values(["id", "t_"], inplace=True)
-foxes_resamp_clean.drop_duplicates()
+foxes_resamp_clean = foxes_resamp_clean.drop_duplicates()
+
+#create timestamps & transform date column
+foxes_all_clean.reset_index(drop = True)
+foxes_all_clean["timestamp"] = foxes_all_clean["t_"].apply(lambda x: dt.datetime.timestamp(x))
+foxes_all_clean["t_"] = foxes_all_clean["t_"].dt.strftime("%Y-%m-%d-%H:%M:%S")
+
+foxes_resamp_clean.reset_index(drop = True)
+foxes_resamp_clean["timestamp"] = foxes_resamp_clean["t_"].apply(lambda x: dt.datetime.timestamp(x))
+foxes_resamp_clean["t_"] = foxes_resamp_clean["t_"].dt.strftime("%Y-%m-%d-%H:%M:%S")
+
+#change order or columns in foxes_resamp_clean
+foxes_resamp_clean = foxes_resamp_clean[["x_", "y_", "t_", "id", "sex", "geometry", "NDVI", "NDMI", "soil", "veg", "slope", "aspect", "elev"]]
 
 print("Almost there. Now the data is being saved to the files")
 
 #save dataframes as shp-files
 foxes_all_final = foxes_all_clean.copy()
-foxes_all_final.reset_index(drop = True)
-foxes_all_final["timestamp"] = foxes_all_final["t_"].apply(lambda x: dt.datetime.timestamp(x))
-foxes_all_final["t_"] = foxes_all_final["t_"].dt.strftime("%Y-%m-%d-%H:%M:%S")
-foxes_all_final.to_file("data/cleaned_shapefiles/foxes_all.shp")
+foxes_all_final.to_file("../data/cleaned_shapefiles/foxes_all.shp")
 
 foxes_resamp_final = foxes_resamp_clean.copy()
-foxes_resamp_final.reset_index(drop = True)
-foxes_resamp_final["timestamp"] = foxes_resamp_final["t_"].apply(lambda x: dt.datetime.timestamp(x))
-foxes_resamp_final["t_"] = foxes_resamp_final["t_"].dt.strftime("%Y-%m-%d-%H:%M:%S")
-foxes_resamp_final.to_file("data/cleaned_shapefiles/foxes_resamp.shp")
+foxes_resamp_final.to_file("../data/cleaned_shapefiles/foxes_resamp.shp")
 
 sample_points_clean.reset_index(drop = True)
 sample_points_clean.to_file("data/cleaned_shapefiles/sample_points.shp")
