@@ -129,18 +129,18 @@ foxes_all_clean = gdf_all.dropna(subset = ["veg"])
 foxes_resamp_clean = gdf_resamp.dropna(subset = ["veg"])
 
 #fill NaNs in the other columns
-sample_points_clean.NDMI.fillna(-1, inplace=True)
-sample_points_clean.NDVI.fillna(0, inplace=True)
+sample_points_clean.NDMI = sample_points_clean.groupby("veg")["NDMI"].transform(lambda x: x.fillna(x.mean()))
+sample_points_clean.NDVI = sample_points_clean.groupby("veg")["NDVI"].transform(lambda x: x.fillna(x.mean()))
 sample_points_clean.aspect.fillna(-1, inplace=True)
 sample_points_clean.dropna(inplace = True)
 
-foxes_all_clean.NDMI.fillna(-1, inplace=True)
-foxes_all_clean.NDVI.fillna(0, inplace=True)
+foxes_all_clean.NDMI = foxes_all_clean.groupby("veg")["NDMI"].transform(lambda x: x.fillna(x.mean()))
+foxes_all_clean.NDVI = foxes_all_clean.groupby("veg")["NDVI"].transform(lambda x: x.fillna(x.mean()))
 foxes_all_clean.aspect.fillna(-1, inplace=True)
 foxes_all_clean.dropna(inplace = True)
 
-foxes_resamp_clean.NDMI.fillna(-1, inplace=True)
-foxes_resamp_clean.NDVI.fillna(0, inplace=True)
+foxes_resamp_clean.NDMI = foxes_resamp_clean.groupby("veg")["NDMI"].transform(lambda x: x.fillna(x.mean()))
+foxes_resamp_clean.NDVI = foxes_resamp_clean.groupby("veg")["NDVI"].transform(lambda x: x.fillna(x.mean()))
 foxes_resamp_clean.aspect.fillna(-1, inplace=True)
 foxes_resamp_clean.dropna(inplace = True)
 
