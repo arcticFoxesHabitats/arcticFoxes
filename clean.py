@@ -167,10 +167,10 @@ print("Almost there. Now the data is being saved to the files")
 
 #save dataframes as shp-files
 foxes_all_final = foxes_all_clean.copy()
-foxes_all_final.to_file("../data/cleaned_shapefiles/foxes_all.shp")
+foxes_all_final.to_file("data/cleaned_shapefiles/foxes_all.shp")
 
 foxes_resamp_final = foxes_resamp_clean.copy()
-foxes_resamp_final.to_file("../data/cleaned_shapefiles/foxes_resamp.shp")
+foxes_resamp_final.to_file("data/cleaned_shapefiles/foxes_resamp.shp")
 
 sample_points_clean.reset_index(drop = True)
 sample_points_clean.to_file("data/cleaned_shapefiles/sample_points.shp")
