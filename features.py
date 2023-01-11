@@ -156,13 +156,13 @@ df_all["asp"] = pd.cut(df_all.aspect,
                                 bins = [-1.1,0,22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5,360],
                                 labels = ["None", "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N2"])
 #in a second step, the second category is renamed to resemble the first
-df_all["asp"] = df_all.aspect_bin.replace("N2","N")
+df_all["asp"] = df_all.asp.replace("N2","N")
 
 #repeat for resamp:
 df_resamp["asp"] = pd.cut(df_resamp.aspect, 
                                 bins = [-1.1,0,22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5,360],
                                 labels = ["None", "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N2"])
-df_resamp["asp"] = df_resamp.aspect_bin.replace("N2","N")
+df_resamp["asp"] = df_resamp.asp.replace("N2","N")
 
 cat_variables = ["soil", "veg", "asp"]
 
