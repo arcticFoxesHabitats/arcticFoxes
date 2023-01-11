@@ -14,31 +14,21 @@ notebooks EDA_home_ranges and Feature_Engineering
 '''
 
 import pandas as pd
-import numpy as np
-import warnings
-import matplotlib.pyplot as plt
-import rasterio
 import geopandas as geopd
-import rasterio.rio
-import seaborn as sns
-import datetime as dt 
-
-from rasterio.plot import show
-from scipy.spatial import ConvexHull
-
-import pyreadr
+import time
+t0 = time.time()
 
 import sys
-sys.path.append("../modeling")
+sys.path.append("modeling")
 import home_ranges as hr
 
 print("The feature engineering is applied. This might take several minutes")
 #data of all foxes:
-foxes_all = geopd.read_file("../data/cleaned_shapefiles/foxes_all.shp")
+foxes_all = geopd.read_file("data/cleaned_shapefiles/foxes_all.shp")
 #resampled data of all foxes (over 2 hours):
-foxes_resamp = geopd.read_file("../data/cleaned_shapefiles/foxes_resamp.shp")
+foxes_resamp = geopd.read_file("data/cleaned_shapefiles/foxes_resamp.shp")
 #sample points:
-sample_points = geopd.read_file("../data/cleaned_shapefiles/sample_points.shp")
+sample_points = geopd.read_file("data/cleaned_shapefiles/sample_points.shp")
 
 #individual points for each fox:
 indiv_fox_all = {}
@@ -137,8 +127,10 @@ sample_points_resamp_merged = sample_points_resamp_merged.rename(columns = {"x" 
 
 df_resamp = pd.concat([fox_resamp_merged, sample_points_resamp_merged])
 
+print("The homeranges are done. Now, the distance to the nearest forest is calculated for every point.")
+
 #calculate distance to forest:
-forest = geopd.read_file("../data/forest_study_area.shp")
+forest = geopd.read_file("data/forest_study_area.shp")
 
 forest = forest.explode(ignore_index=True)
 forest = forest.to_crs(3006)
@@ -147,13 +139,18 @@ def distance_to_forest(forest, point):
     return min(forest.distance(point))
 
 df_all["distForest"] = df_all.geometry
-df_all.distForest = df_all.distForest.apply(lambda x: distance_to_forest(forest,x))
+###df_all.distForest = df_all.distForest.apply(lambda x: distance_to_forest(forest,x))
+
+print("The distance to the forest is calculated for the full dataset. Now, this calculation is repeated for the resampled dataset and the sample points.")
+print("You're approximately halfway done.")
 
 df_resamp["distForest"] = df_resamp.geometry
-df_resamp.distForest = df_resamp.distForest.apply(lambda x: distance_to_forest(forest,x))
+###df_resamp.distForest = df_resamp.distForest.apply(lambda x: distance_to_forest(forest,x))
 
 sample_points["distForest"] = sample_points.geometry
-sample_points.distForest = sample_points.distForest.apply(lambda x: distance_to_forest(forest,x))
+###sample_points.distForest = sample_points.distForest.apply(lambda x: distance_to_forest(forest,x))
+
+print("The calculation of the distance to the forest is done. Now, some dummie variables are created.")
 
 #create dummie variables:
 #in a fist step, the category "N" is created twice
@@ -177,7 +174,12 @@ categories_resamp = pd.get_dummies(df_resamp[cat_variables], drop_first=True)
 df_all = pd.concat([df_all, categories_all], axis = 1)
 df_resamp = pd.concat([df_resamp, categories_resamp], axis = 1)
 
+df_all = df_all.drop("aspect_bin", axis = 1)
+df_resamp = df_resamp.drop("aspect_bin", axis = 1)
+
 #save the data:
-df_all.to_file("../data/final_shapefiles/foxes_modelling_all.shp")
-df_resamp.to_file("../data/final_shapefiles/foxes_modelling_resamp.shp")
-sample_points.to_file("../data/final_shapefiles/sample_points.shp")
+df_all.to_file("data/final_shapefiles/foxes_modelling_all.shp")
+df_resamp.to_file("data/final_shapefiles/foxes_modelling_resamp.shp")
+sample_points.to_file("data/final_shapefiles/sample_points.shp")
+
+print("Done :)")
