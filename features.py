@@ -15,8 +15,6 @@ notebooks EDA_home_ranges and Feature_Engineering
 
 import pandas as pd
 import geopandas as geopd
-import time
-t0 = time.time()
 
 import sys
 sys.path.append("modeling")
@@ -139,34 +137,34 @@ def distance_to_forest(forest, point):
     return min(forest.distance(point))
 
 df_all["distForest"] = df_all.geometry
-###df_all.distForest = df_all.distForest.apply(lambda x: distance_to_forest(forest,x))
+df_all.distForest = df_all.distForest.apply(lambda x: distance_to_forest(forest,x))
 
 print("The distance to the forest is calculated for the full dataset. Now, this calculation is repeated for the resampled dataset and the sample points.")
 print("You're approximately halfway done.")
 
 df_resamp["distForest"] = df_resamp.geometry
-###df_resamp.distForest = df_resamp.distForest.apply(lambda x: distance_to_forest(forest,x))
+df_resamp.distForest = df_resamp.distForest.apply(lambda x: distance_to_forest(forest,x))
 
 sample_points["distForest"] = sample_points.geometry
-###sample_points.distForest = sample_points.distForest.apply(lambda x: distance_to_forest(forest,x))
+sample_points.distForest = sample_points.distForest.apply(lambda x: distance_to_forest(forest,x))
 
 print("The calculation of the distance to the forest is done. Now, some dummie variables are created.")
 
 #create dummie variables:
 #in a fist step, the category "N" is created twice
-df_all["aspect_bin"] = pd.cut(df_all.aspect, 
+df_all["asp"] = pd.cut(df_all.aspect, 
                                 bins = [-1.1,0,22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5,360],
                                 labels = ["None", "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N2"])
 #in a second step, the second category is renamed to resemble the first
-df_all["aspect_bin"] = df_all.aspect_bin.replace("N2","N")
+df_all["asp"] = df_all.aspect_bin.replace("N2","N")
 
 #repeat for resamp:
-df_resamp["aspect_bin"] = pd.cut(df_resamp.aspect, 
+df_resamp["asp"] = pd.cut(df_resamp.aspect, 
                                 bins = [-1.1,0,22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5,360],
                                 labels = ["None", "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N2"])
-df_resamp["aspect_bin"] = df_resamp.aspect_bin.replace("N2","N")
+df_resamp["asp"] = df_resamp.aspect_bin.replace("N2","N")
 
-cat_variables = ["soil", "veg", "aspect_bin"]
+cat_variables = ["soil", "veg", "asp"]
 
 categories_all = pd.get_dummies(df_all[cat_variables], drop_first=True)
 categories_resamp = pd.get_dummies(df_resamp[cat_variables], drop_first=True)
@@ -174,8 +172,8 @@ categories_resamp = pd.get_dummies(df_resamp[cat_variables], drop_first=True)
 df_all = pd.concat([df_all, categories_all], axis = 1)
 df_resamp = pd.concat([df_resamp, categories_resamp], axis = 1)
 
-df_all = df_all.drop("aspect_bin", axis = 1)
-df_resamp = df_resamp.drop("aspect_bin", axis = 1)
+df_all = df_all.drop("asp", axis = 1)
+df_resamp = df_resamp.drop("asp", axis = 1)
 
 #save the data:
 df_all.to_file("data/final_shapefiles/foxes_modelling_all.shp")
