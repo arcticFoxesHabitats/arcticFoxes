@@ -9,3 +9,6 @@ setup:
 
 data_clean:
 	python clean.py
+
+features:
+	python features.py
