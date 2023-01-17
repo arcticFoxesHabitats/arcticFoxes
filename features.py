@@ -164,6 +164,12 @@ df_resamp["asp"] = pd.cut(df_resamp.aspect,
                                 labels = ["None", "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N2"])
 df_resamp["asp"] = df_resamp.asp.replace("N2","N")
 
+#repeate for sample points:
+sample_points["asp"] = pd.cut(sample_points.aspect, 
+                                bins = [-1.1,0,22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5,360],
+                                labels = ["Flat", "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N2"])
+sample_points["asp"] = sample_points.asp.replace("N2","N")
+
 cat_variables = ["soil", "veg", "asp"]
 
 categories_all = pd.get_dummies(df_all[cat_variables], drop_first=True)
