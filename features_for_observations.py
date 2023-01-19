@@ -1,3 +1,10 @@
+'''
+Functions unsed in EDA_obseervsations.
+
+Gathering addidtional information from the data and performing transformations
+'''
+
+
 
 from datetime import datetime, timedelta
 from shapely.geometry import Point, Polygon, MultiPolygon
