@@ -1,7 +1,7 @@
 '''
 Functions unsed in EDA_obseervsations.
 
-Gathering addidtional information from the data and performing transformations
+Gathering addidtional information from the data and performing transformations.
 '''
 
 
