@@ -152,19 +152,25 @@ print("The calculation of the distance to the forest is done. Now, some dummie v
 
 #create dummie variables:
 #in a fist step, the category "N" is created twice
-df_all["asp"] = pd.cut(df_all.aspect, 
+df_all["asp"] = pd.cut(df_all.a, 
                                 bins = [-1.1,0,22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5,360],
                                 labels = ["None", "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N2"])
 #in a second step, the second category is renamed to resemble the first
 df_all["asp"] = df_all.asp.replace("N2","N")
 
 #repeat for resamp:
-df_resamp["asp"] = pd.cut(df_resamp.aspect, 
+df_resamp["asp"] = pd.cut(df_resamp.a, 
                                 bins = [-1.1,0,22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5,360],
                                 labels = ["None", "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N2"])
 df_resamp["asp"] = df_resamp.asp.replace("N2","N")
 
-cat_variables = ["soil", "veg", "asp"]
+#repeate for sample points:
+sample_points["asp"] = pd.cut(sample_points.a, 
+                                bins = [-1.1,0,22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5,360],
+                                labels = ["Flat", "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N2"])
+sample_points["asp"] = sample_points.asp.replace("N2","N")
+
+cat_variables = ["s", "v", "asp"]
 
 categories_all = pd.get_dummies(df_all[cat_variables], drop_first=True)
 categories_resamp = pd.get_dummies(df_resamp[cat_variables], drop_first=True)
