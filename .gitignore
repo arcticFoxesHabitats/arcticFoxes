@@ -138,3 +138,5 @@ models/*
 .mlflow_uri
 
 .DS_Store
+._.DS_Store
+images/*
